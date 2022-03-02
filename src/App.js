@@ -1,21 +1,34 @@
-import {useEffect, useState} from "react";
-
-function Hello() {
-  useEffect(()=> { //false일때 완전히 지워지고 true일때 다시 refresh되어서 show이면 콘솔창에 등장
-    console.log("created :) ");
-    return () =>  console.log("destroyed :( ");
-  }, []);
-  return <h1>Hello</h1>;
-}
+import {useState} from "react";
 
 function App() {
-  const [showing, setShowing] = useState(false);
-  const onClick = () => setShowing((prev) => !prev);
-  
+  const [toDo, setToDo] = useState("");
+  const [toDos, setToDos ] = useState([]);
+  const onChange = (event) => setToDo(event.target.value);
+  const onSubmit = (event) => {
+    event.preventDefault();
+    //console.log(toDo);
+    if (toDo == ""){
+      return;
+    }
+
+    setToDos((currentArray) => [toDo, ...currentArray]);
+    setToDo(""); 
+  };
+  console.log(toDos);
   return (
     <div>
-      {showing ? <Hello /> : null}
-      <button onClick={onClick}> {showing ? "Hide" : "Show" }</button>
+      <h1>My To Dos ({toDos.length})</h1>
+      <form onSubmit={onSubmit}>
+        <input onChange={onChange} value={toDo} type="text" placeholder='Write your todo...' />
+        <button>Add To Do</button>
+      </form>
+      <hr />
+      {
+          toDos.map((item,index) => (
+            <li key={index}>{item}</li>
+          )
+        )
+      }
     </div>
   );
 }
